@@ -1,6 +1,10 @@
 require('./config/config');
 
 const express = require('express')
+    // Using Node.js `require()`
+const mongoose = require('mongoose');
+
+
 const app = express()
 const bodyParser = require('body-parser')
     // parse application/x-www-form-urlencoded
@@ -9,46 +13,19 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 
+app.use(require('./routes/usuario'));
+app.use(require('./routes/esal'));
+app.use(require('./routes/tipoEsal'));
+app.use(require('./routes/donacion'));
 
 
-app.get('/usuario', function(req, res) {
-        res.json('get usuario')
-    })
-    //crear nuevos registros
-app.post('/usuario', function(req, res) {
+mongoose.connect(process.env.URLDB, (err, res) => {
 
-        let body = req.body;
+    if (err) throw err;
 
-        if (body.nombre === undefined) {
+    console.log('Base de datos ONLINE');
 
-            res.status(400).json({
-                ok: false,
-                mensaje: 'El nombre es necesario'
-            });
-
-        } else {
-
-            res.json({
-                body: body
-            })
-        }
-
-    })
-    //actualizar 
-app.put('/usuario/:id', function(req, res) {
-
-    let id = req.params.id;
-
-    res.json({
-        id
-    })
-})
-app.delete('/usuario', function(req, res) {
-    res.json('delete usuario')
-})
-
-
-
+});
 
 app.listen(process.env.PORT, () => {
     console.log("Escuchando el puerto  ", process.env.PORT);
