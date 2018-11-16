@@ -1,10 +1,10 @@
-const express = require('express')
-const app = express()
+const express = require('express');
+
 
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-//google
+
 const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(process.env.CLIENT_ID);
 
@@ -12,7 +12,7 @@ const client = new OAuth2Client(process.env.CLIENT_ID);
 
 const Usuario = require('../models/usuario');
 
-
+const app = express();
 
 
 
@@ -32,31 +32,31 @@ app.post('/login', (req, res) => {
         }
 
         if (!usuarioDB) {
-            //para q no siga ejecutando mas codigo se pone el return
+
             return res.status(400).json({
                 ok: false,
-
-                err: { message: '(Usuario) o contraseña incorrectos' }
-
+                err: {
+                    message: '(Usuario) o contraseña incorrectos'
+                }
             });
         }
-        //si las contraseñas no son iguales
+
 
 
         if (!bcrypt.compareSync(body.password, usuarioDB.password)) {
             return res.status(400).json({
                 ok: false,
-
-                err: { message: 'Usuario o (contraseña) incorrectos' }
-
+                err: {
+                    message: 'Usuario o (contraseña) incorrectos'
+                }
             });
 
         }
 
-        //objeto es el payload
+
         let token = jwt.sign({
             usuario: usuarioDB
-        }, process.env.SEED, { expiresIn: process.env.CADUCIDAD_TOKEN }); //30 dias
+        }, process.env.SEED, { expiresIn: process.env.CADUCIDAD_TOKEN });
 
         res.json({
             ok: true,
@@ -95,7 +95,9 @@ async function verify(token) {
 
 }
 
-//como usa una funcion await
+
+
+
 app.post('/google', async(req, res) => {
 
     let token = req.body.idtoken;
@@ -113,12 +115,9 @@ app.post('/google', async(req, res) => {
 
 
         });
-   
-    //verificar si yo no tengo un usuario q tenga ese correo
 
 
-
-  Usuario.findOne({ email: googleUser.email }, (err, usuarioDB) => {
+    Usuario.findOne({ email: googleUser.email }, (err, usuarioDB) => {
 
 
         if (err) {
@@ -132,10 +131,7 @@ app.post('/google', async(req, res) => {
             });
         };
 
-
-
-
-       if (usuarioDB) {
+        if (usuarioDB) {
 
 
             if (usuarioDB.google === false) {
@@ -150,12 +146,7 @@ app.post('/google', async(req, res) => {
 
                     }
                 });
-            }
-            //ya se ha autenticado por google
-           else {
-
-
-
+            } else {
                 let token = jwt.sign({
                     usuario: usuarioDB
                 }, process.env.SEED, { expiresIn: process.env.CADUCIDAD_TOKEN });
@@ -174,8 +165,8 @@ app.post('/google', async(req, res) => {
             }
 
         } else {
-            //Si el usuario no existe en nuestra base de datos
-            //tenemos q crear un nuevo objeto
+            // Si el usuario no existe en nuestra base de datos
+
 
             let usuario = new Usuario();
 
@@ -186,28 +177,28 @@ app.post('/google', async(req, res) => {
             usuario.password = ':)';
 
             usuario.save((err, usuarioDB) => {
+
+
                 if (err) {
-
-
                     return res.status(500).json({
                         ok: false,
                         err
                     });
 
                 };
-                //crear su token
+
 
                 let token = jwt.sign({
                     usuario: usuarioDB
-                }, process.env.SEED, { expiresIn: process.env.CADUCIDAD_TOKEN }); //30 dias
+                }, process.env.SEED, { expiresIn: process.env.CADUCIDAD_TOKEN });
 
-                //status 200 por defecto
 
-               return res.json({
+
+                return res.json({
                     ok: true,
                     usuario: usuarioDB,
-                    token
 
+                    token,
                 });
 
 
