@@ -4,8 +4,21 @@ const app = express()
 const bcrypt = require('bcrypt');
 const _ = require('underscore');
 const Usuario = require('../models/usuario');
+//requerimos el middleware
+const { verificaToken , verificaAdminRole} = require('../middlewares/autenticacion');
 
-app.get('/usuario', function(req, res) {
+//El middleware es para validar el token en cada operacion,
+// usamos el middleware
+
+app.get('/usuario', verificaToken, (req, res) => {
+
+/* return res.json({
+usuario: req.usuario,
+nombre: req.usuario.nombre,
+email: req.usuario.email
+
+});  */
+
 
 
 
@@ -16,7 +29,7 @@ app.get('/usuario', function(req, res) {
         limite = Number(limite);
 
         //q campos qremos mostrar
-        Usuario.find({ estado: true }, 'nombre email')
+        Usuario.find({ estado: true }, 'nombre email estado google role')
             .skip(desde)
             .limit(limite)
             .exec((err, usuarios) => {
@@ -45,7 +58,7 @@ app.get('/usuario', function(req, res) {
 
     })
     //crear nuevos registros
-app.post('/usuario', function(req, res) {
+app.post('/usuario',[verificaToken, verificaAdminRole], function(req, res) {
 
         let body = req.body;
 
@@ -77,7 +90,7 @@ app.post('/usuario', function(req, res) {
 
     })
     //actualizar 
-app.put('/usuario/:id', function(req, res) {
+app.put('/usuario/:id',[verificaToken, verificaAdminRole], function(req, res) {
 
     let id = req.params.id;
     let body = _.pick(req.body, ['nombre', 'email', 'img', 'role', 'estado']);
@@ -101,7 +114,7 @@ app.put('/usuario/:id', function(req, res) {
 
 
 })
-app.delete('/usuario/:id', function(req, res) {
+app.delete('/usuario/:id',[verificaToken, verificaAdminRole], function(req, res) {
 
     let id = req.params.id;
     let cambiaEstado = {
