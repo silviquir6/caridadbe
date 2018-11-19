@@ -140,7 +140,7 @@ app.put('/tipoEsal/:id', [verificaToken, verificaAdminRole], function(req, res) 
         let id = req.params.id;
         let body = req.body;
 
-        Usuario.findByIdAndUpdate(id, body, { new: true, runValidators: true, context: 'query' }, (err, tipoEsalDB) => {
+        TipoEsal.findByIdAndUpdate(id, body, { new: true, runValidators: true, context: 'query' }, (err, tipoEsalDB) => {
 
             if (err) {
 

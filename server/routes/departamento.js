@@ -2,6 +2,8 @@
 const express = require('express')
 const app = express()
 
+// underscore
+const _ = require('underscore');
 
 // middleware
 const { verificaToken, verificaAdminRole } = require('../middlewares/autenticacion');
@@ -10,9 +12,32 @@ const { verificaToken, verificaAdminRole } = require('../middlewares/autenticaci
 const Departamento = require('../models/departamento');
 
 app.get('/departamento', (req, res) => {
-        res.json({
-            res: 'get departamento'
-        });
+
+        //q campos qremos mostrar
+        Departamento.find({}, 'descripcion')
+            .exec((err, departamentos) => {
+
+                if (err) {
+
+                    return res.status(400).json({
+                        ok: false,
+                        err
+                    });
+
+                }
+                Departamento.count({}, (err, conteo) => {
+                    res.json({
+                        ok: true,
+                        departamentos,
+                        cuantos: conteo
+                    });
+
+                });
+
+
+
+
+            });
 
     })
     //crear nuevos registros
@@ -45,15 +70,55 @@ app.post('/departamento', [verificaToken, verificaAdminRole], function(req, res)
 
     })
     //actualizar 
-app.put('/departamento/:id', function(req, res) {
-    res.json({
-        res: 'put departamento'
+app.put('/departamento/:id', verificaToken, function(req, res) {
+    let id = req.params.id;
+    req.body.usuario = req.usuario._id;
+
+    let body = _.pick(req.body, ['descripcion', 'usuario']);
+
+    Departamento.findByIdAndUpdate(id, body, { new: true, runValidators: true, context: 'query' }, (err, departamentoDB) => {
+
+        if (err) {
+
+            return res.status(400).json({
+                ok: false,
+                err
+            });
+
+        }
+
+        res.json({
+            ok: true,
+            departamento: departamentoDB
+        })
     });
 
 })
 app.delete('/departamento/:id', function(req, res) {
-    res.json({
-        res: 'delete departamento'
+    let id = req.params.id;
+
+    Departamento.findByIdAndRemove(id, (err, deptoBorrado) => {
+        if (err) {
+
+            return res.status(400).json({
+                ok: false,
+                err
+            });
+
+        }
+        if (!deptoBorrado) {
+            return res.status(400).json({
+                ok: false,
+                err: { message: 'Departamento no encontrado' }
+            });
+
+        }
+
+        res.json({
+            ok: true,
+            departamento: deptoBorrado
+        })
+
     });
 
 });

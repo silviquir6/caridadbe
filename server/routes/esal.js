@@ -23,6 +23,8 @@ app.get('/esal', function(req, res) {
         Esal.find({ estado: true }, 'nombre img googlemaps direccion tipoEsal telefono facebook sitioWeb youtubeChannel municipio departamento pais usuario estado')
             .populate('tipoEsal')
             .populate('usuario')
+            .populate('municipio')
+            .populate('departamento')
             .skip(desde)
             .limit(limite)
             .exec((err, esals) => {
@@ -192,8 +194,9 @@ app.post('/esal', [verificaToken, verificaAdminRole], function(req, res) {
     //Actualizar ESAL
     //==========================	
 
-app.put('/esal/:id', function(req, res) {
+app.put('/esal/:id', verificaToken, function(req, res) {
     let id = req.params.id;
+    req.body.usuario = req.usuario._id;
     let body = req.body;
 
     Esal.findByIdAndUpdate(id, body, { new: true, runValidators: true, context: 'query' }, (err, esalDB) => {
@@ -224,16 +227,16 @@ app.put('/esal/:id', function(req, res) {
 })
 
 //==========================
-//Actualizar ESAL
+//  Cambiar Estado /Delete ESAL
 //==========================	
-app.delete('/esal', [verificaToken, verificaAdminRole], function(req, res) {
+app.delete('/esal/:id', [verificaToken, verificaAdminRole], function(req, res) {
 
     let id = req.params.id;
     let cambiaEstado = {
         estado: false
     };
 
-    Usuario.findByIdAndUpdate(id, cambiaEstado, { new: true }, (err, esalDB) => {
+    Esal.findByIdAndUpdate(id, cambiaEstado, { new: true }, (err, esalDB) => {
 
         if (err) {
 

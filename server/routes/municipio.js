@@ -1,7 +1,8 @@
 // app
 const express = require('express')
 const app = express()
-
+    // underscore
+const _ = require('underscore');
 
 // middleware
 const { verificaToken, verificaAdminRole } = require('../middlewares/autenticacion');
@@ -10,9 +11,29 @@ const { verificaToken, verificaAdminRole } = require('../middlewares/autenticaci
 const Municipio = require('../models/municipio');
 
 app.get('/municipio', (req, res) => {
-        res.json({
-            res: 'get municipio'
-        });
+
+        //q campos qremos mostrar
+        Municipio.find({}, 'descripcion')
+            .exec((err, municipios) => {
+
+                if (err) {
+
+                    return res.status(400).json({
+                        ok: false,
+                        err
+                    });
+
+                }
+                Municipio.count({}, (err, conteo) => {
+                    res.json({
+                        ok: true,
+                        municipios,
+                        cuantos: conteo
+                    });
+
+                });
+
+            });
 
     })
     //crear nuevos registros
@@ -46,16 +67,57 @@ app.post('/municipio', [verificaToken, verificaAdminRole], function(req, res) {
 
     })
     //actualizar 
-app.put('/municipio/:id', function(req, res) {
-    res.json({
-        res: 'put municipio'
+app.put('/municipio/:id', verificaToken, function(req, res) {
+    let id = req.params.id;
+    req.body.usuario = req.usuario._id;
+
+    let body = _.pick(req.body, ['descripcion', 'usuario']);
+
+    Municipio.findByIdAndUpdate(id, body, { new: true, runValidators: true, context: 'query' }, (err, municipioDB) => {
+
+        if (err) {
+
+            return res.status(400).json({
+                ok: false,
+                err
+            });
+
+        }
+
+        res.json({
+            ok: true,
+            municipio: municipioDB
+        })
     });
 
 })
 app.delete('/municipio/:id', function(req, res) {
-    res.json({
-        res: 'delete municipio'
+    let id = req.params.id;
+
+    Municipio.findByIdAndRemove(id, (err, municipioBorrado) => {
+        if (err) {
+
+            return res.status(400).json({
+                ok: false,
+                err
+            });
+
+        }
+        if (!municipioBorrado) {
+            return res.status(400).json({
+                ok: false,
+                err: { message: 'Municipio no encontrado' }
+            });
+
+        }
+
+        res.json({
+            ok: true,
+            municipio: municipioBorrado
+        })
+
     });
+
 
 })
 
