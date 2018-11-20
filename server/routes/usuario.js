@@ -31,7 +31,7 @@ app.get('/usuario', verificaToken, (req, res) => {
         limite = Number(limite);
 
         //q campos qremos mostrar
-        Usuario.find({ estado: true }, 'nombre email estado google role')
+        Usuario.find({ estado: true }, 'nombre email estado google role img')
             .skip(desde)
             .limit(limite)
             .exec((err, usuarios) => {

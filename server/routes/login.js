@@ -82,7 +82,7 @@ async function verify(token) {
 }
 
 
-app.post('/google', async (req, res) => {
+app.post('/google', async(req, res) => {
 
     let token = req.body.idtoken;
 
@@ -122,13 +122,15 @@ app.post('/google', async (req, res) => {
                 return res.json({
                     ok: true,
                     usuario: usuarioDB,
-                    token,
+                    token
                 });
 
             }
 
         } else {
-            // Si el usuario no existe en nuestra base de datos
+
+            console.log('Usuario NO EXISTE EN LA BD')
+                // Si el usuario no existe en nuestra base de datos
             let usuario = new Usuario();
 
             usuario.nombre = googleUser.nombre;
@@ -154,7 +156,7 @@ app.post('/google', async (req, res) => {
                 return res.json({
                     ok: true,
                     usuario: usuarioDB,
-                    token,
+                    token
                 });
 
 
