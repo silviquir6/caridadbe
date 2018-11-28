@@ -12,38 +12,75 @@ const Municipio = require('../models/municipio');
 
 app.get('/municipio', (req, res) => {
 
-        //q campos qremos mostrar
-        Municipio.find({}, 'descripcion')
-            .exec((err, municipios) => {
+    //q campos qremos mostrar
+    Municipio.find({})
+        .exec((err, municipios) => {
 
-                if (err) {
+            if (err) {
 
-                    return res.status(400).json({
-                        ok: false,
-                        err
-                    });
+                return res.status(400).json({
+                    ok: false,
+                    err
+                });
 
-                }
-                Municipio.count({}, (err, conteo) => {
-                    res.json({
-                        ok: true,
-                        municipios,
-                        cuantos: conteo
-                    });
-
+            }
+            Municipio.count({}, (err, conteo) => {
+                res.json({
+                    ok: true,
+                    municipios,
+                    cuantos: conteo
                 });
 
             });
 
-    })
-    //crear nuevos registros
+        });
+
+})
+
+
+//===================================================
+//Buscar municipio por departamento
+//===================================================
+
+app.get('/municipio/:idDepartamento', verificaToken, function(req, res) {
+    let idDepartamento = req.params.idDepartamento;
+
+    //q campos qremos mostrar
+    Municipio.find({ departamento: idDepartamento }, '_id, descripcion')
+        .exec((err, municipios) => {
+
+            if (err) {
+
+                return res.status(400).json({
+                    ok: false,
+                    err
+                });
+
+            }
+            Municipio.count({ departamento: idDepartamento }, (err, conteo) => {
+                res.json({
+                    ok: true,
+                    municipios,
+                    cuantos: conteo
+                });
+
+            });
+
+        });
+
+
+
+});
+
+//crear nuevos registros
 app.post('/municipio', [verificaToken, verificaAdminRole], function(req, res) {
 
         let body = req.body;
 
         let municipio = new Municipio({
             descripcion: body.descripcion,
-            usuario: req.usuario._id
+            usuario: req.usuario._id,
+            departamento: body.departamento
         });
 
         municipio.save((err, municipioDB) => {

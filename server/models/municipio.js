@@ -3,7 +3,8 @@ var Schema = mongoose.Schema;
 
 var municipioSchema = new Schema({
     descripcion: { type: String, required: [true, 'La descripción es necesaria'] },
-    usuario: { type: Schema.Types.ObjectId, ref: 'Usuario', required: true }
+    usuario: { type: Schema.Types.ObjectId, ref: 'Usuario', required: true },
+    departamento: { type: Schema.Types.ObjectId, ref: 'departamento', required: true }
 
 }, { collection: 'municipio' });
 

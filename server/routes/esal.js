@@ -20,7 +20,7 @@ app.get('/esal', function(req, res) {
         limite = Number(limite);
 
         //q campos qremos mostrar
-        Esal.find({ estado: true }, 'nombre img googlemaps direccion tipoEsal telefono facebook sitioWeb youtubeChannel municipio departamento pais usuario estado')
+        Esal.find({ estado: true }, 'nombre descripcion img googlemaps direccion tipoEsal telefono facebook sitioWeb youtubeChannel municipio departamento pais usuario estado')
             .populate('tipoEsal')
             .populate('usuario')
             .populate('municipio')
@@ -98,11 +98,57 @@ app.get('/esal/buscar/:termino', verificaToken, function(req, res) {
     let regex = new RegExp(termino, 'i');
 
 
-
-    //q campos qremos mostrar
-    Esal.find({ nombre: RegExp, estado: true })
+    Esal.find({ nombre: regex, estado: true }, 'nombre descripcion img googlemaps direccion tipoEsal telefono facebook sitioWeb youtubeChannel municipio departamento pais usuario estado')
         .populate('tipoEsal')
         .populate('usuario')
+        .populate('municipio')
+        .populate('departamento')
+
+    .exec((err, esals) => {
+
+        if (err) {
+
+            return res.status(500).json({
+                ok: false,
+                err
+            });
+
+        }
+        Esal.count({ nombre: regex, estado: true }, (err, conteo) => {
+            res.json({
+                ok: true,
+                esals,
+                cuantos: conteo
+            });
+
+        });
+
+
+
+    });
+
+
+
+
+});
+
+//===================================================
+//Buscar ESAL por ciudad, departamento, tipo de Esal
+//===================================================
+
+app.get('/esalBuscarPorMunDptoTipoEsal', verificaToken, function(req, res) {
+
+
+    let municipio = req.query.municipio;
+    let departamento = req.query.departamento;
+    let tipoEsal = req.query.tipoEsal;
+
+    //q campos qremos mostrar
+    Esal.find({ municipio: municipio, departamento: departamento, tipoEsal: tipoEsal, estado: true }, 'nombre descripcion img googlemaps direccion tipoEsal telefono facebook sitioWeb youtubeChannel municipio departamento pais usuario estado')
+        .populate('tipoEsal')
+        .populate('usuario')
+        .populate('municipio')
+        .populate('departamento')
         .exec((err, esals) => {
 
             if (err) {
@@ -113,7 +159,7 @@ app.get('/esal/buscar/:termino', verificaToken, function(req, res) {
                 });
 
             }
-            Esal.count({ estado: true }, (err, conteo) => {
+            Esal.count({ municipio: municipio, departamento: departamento, tipoEsal: tipoEsal, estado: true }, (err, conteo) => {
                 res.json({
                     ok: true,
                     esals,
@@ -123,13 +169,12 @@ app.get('/esal/buscar/:termino', verificaToken, function(req, res) {
             });
 
 
+
         });
 
 
 
-
 });
-
 
 
 
@@ -158,7 +203,8 @@ app.post('/esal', [verificaToken, verificaAdminRole], function(req, res) {
             departamento: body.departamento,
             pais: body.pais,
             usuario: req.usuario._id,
-            estado: body.estado
+            estado: body.estado,
+            descripcion: body.descripcion
 
         });
 

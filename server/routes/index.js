@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express();
 
-
+app.use(require('./payu'));
 app.use(require('./departamento'));
 app.use(require('./municipio'));
 app.use(require('./ejemplo'));

@@ -12,6 +12,7 @@ var paisValido = {
 
 var esalSchema = new Schema({
     nombre: { type: String, required: [true, 'El	nombre	es	necesario'] },
+    descripcion: { type: String, required: [true, 'La descripción	es	necesaria'] },
     img: { type: String, required: false },
     googlemaps: { type: String, required: false },
     direccion: { type: String, required: true },

@@ -91,6 +91,49 @@ app.get('/donacion/:id', verificaToken, function(req, res) {
 })
 
 
+//============================
+//Buscar donaciones por usuario
+//============================
+
+app.get('/donacion/buscarPorUsuario/:idusuario', verificaToken, function(req, res) {
+
+    let idusuario = req.params.idusuario;
+    //let regex = new RegExp(idusuario, 'i');
+
+
+    //q campos qremos mostrar
+    Donacion.find({ usuario: idusuario }, 'valor fecha esal usuario')
+        .populate('esal')
+        .populate('usuario')
+        .exec((err, donaciones) => {
+
+            if (err) {
+
+                return res.status(500).json({
+                    ok: false,
+                    err
+                });
+
+            }
+            Donacion.count({ usuario: idusuario }, (err, conteo) => {
+                res.json({
+                    ok: true,
+                    donaciones,
+                    cuantos: conteo
+                });
+
+            });
+
+
+
+        });
+
+
+
+});
+
+
+
 //==============================
 //Crear nueva donaci�n
 //==============================

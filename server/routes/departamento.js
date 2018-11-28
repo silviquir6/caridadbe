@@ -13,34 +13,36 @@ const Departamento = require('../models/departamento');
 
 app.get('/departamento', (req, res) => {
 
-        //q campos qremos mostrar
-        Departamento.find({}, 'descripcion')
-            .exec((err, departamentos) => {
+    //q campos qremos mostrar
+    Departamento.find({}, 'descripcion')
+        .exec((err, departamentos) => {
 
-                if (err) {
+            if (err) {
 
-                    return res.status(400).json({
-                        ok: false,
-                        err
-                    });
-
-                }
-                Departamento.count({}, (err, conteo) => {
-                    res.json({
-                        ok: true,
-                        departamentos,
-                        cuantos: conteo
-                    });
-
+                return res.status(400).json({
+                    ok: false,
+                    err
                 });
 
-
-
+            }
+            Departamento.count({}, (err, conteo) => {
+                res.json({
+                    ok: true,
+                    departamentos,
+                    cuantos: conteo
+                });
 
             });
 
-    })
-    //crear nuevos registros
+
+
+
+        });
+
+})
+
+
+//crear nuevos registros
 app.post('/departamento', [verificaToken, verificaAdminRole], function(req, res) {
         let body = req.body;
 

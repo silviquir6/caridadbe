@@ -152,7 +152,7 @@ app.post('/google', async(req, res) => {
                     usuario: usuarioDB
                 }, process.env.SEED, { expiresIn: process.env.CADUCIDAD_TOKEN });
 
-
+                console.log('Usuario SILVIAAAA');
                 return res.json({
                     ok: true,
                     usuario: usuarioDB,
