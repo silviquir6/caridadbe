@@ -218,48 +218,6 @@ function obtenermenu(ROLE) {
         },
         {
             path: '',
-            title: 'Apps',
-            icon: 'mdi mdi-apps',
-            class: 'has-arrow',
-            label: '',
-            labelClass: '',
-            extralink: false,
-            submenu: [
-                /* {
-                                    path: '/apps/email',
-                                    title: 'Mailbox',
-                                    icon: '',
-                                    class: '',
-                                    label: '',
-                                    labelClass: '',
-                                    extralink: false,
-                                    submenu: []
-                                } */
-
-                {
-                    path: '/apps/fullcalendar',
-                    title: 'Calendar',
-                    icon: '',
-                    class: '',
-                    label: '',
-                    labelClass: '',
-                    extralink: false,
-                    submenu: []
-                },
-                {
-                    path: '/apps/taskboard',
-                    title: 'Taskboard',
-                    icon: '',
-                    class: '',
-                    label: '',
-                    labelClass: '',
-                    extralink: false,
-                    submenu: []
-                }
-            ]
-        },
-        {
-            path: '',
             title: 'Component',
             icon: 'mdi mdi-bullseye',
             class: 'has-arrow two-column',
@@ -812,15 +770,46 @@ function obtenermenu(ROLE) {
     ];
 
     if (ROLE === 'ADMIN_ROLE') {
-        menu[1].submenu.push({
-            path: '/apps/email',
-            title: 'Mailbox',
-            icon: '',
-            class: '',
+        menu.push({
+            path: '',
+            title: 'Apps',
+            icon: 'mdi mdi-apps',
+            class: 'has-arrow',
             label: '',
             labelClass: '',
             extralink: false,
-            submenu: []
+            submenu: [{
+                    path: '/apps/email',
+                    title: 'Mailbox',
+                    icon: '',
+                    class: '',
+                    label: '',
+                    labelClass: '',
+                    extralink: false,
+                    submenu: []
+                },
+
+                {
+                    path: '/apps/fullcalendar',
+                    title: 'Calendar',
+                    icon: '',
+                    class: '',
+                    label: '',
+                    labelClass: '',
+                    extralink: false,
+                    submenu: []
+                },
+                {
+                    path: '/apps/taskboard',
+                    title: 'Taskboard',
+                    icon: '',
+                    class: '',
+                    label: '',
+                    labelClass: '',
+                    extralink: false,
+                    submenu: []
+                }
+            ]
         });
     }
     return menu;
