@@ -21,8 +21,10 @@ app.get('/tipoEsal', function(req, res) {
     limite = Number(limite);
 
     //q campos qremos mostrar
-    TipoEsal.find({}, 'descripcion usuario')
-        .skip(desde)
+    TipoEsal.find({})
+        .populate('usuario')
+
+    .skip(desde)
         .limit(limite)
         .exec((err, tipoEsals) => {
 

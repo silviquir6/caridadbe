@@ -5,7 +5,8 @@ const jwt = require('jsonwebtoken');
 
 const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(process.env.CLIENT_ID);
-
+// middleware
+const { verificaToken } = require('../middlewares/autenticacion');
 
 
 const Usuario = require('../models/usuario');
@@ -58,6 +59,20 @@ app.post('/login', (req, res) => {
         });
 
 
+    });
+
+});
+
+
+app.get('/renuevaToken', verificaToken, (req, res) => {
+
+    let token = jwt.sign({
+        usuario: req.usuario
+    }, process.env.SEED, { expiresIn: process.env.CADUCIDAD_TOKEN });
+
+    res.status(200).json({
+        ok: true,
+        token: token
     });
 
 });
@@ -207,6 +222,16 @@ function obtenermenu(ROLE) {
                 {
                     path: '/dashboard/dashboard3',
                     title: 'Analytical',
+                    icon: '',
+                    class: '',
+                    label: '',
+                    labelClass: '',
+                    extralink: false,
+                    submenu: []
+                },
+                {
+                    path: '/dashboard/esalDashboard',
+                    title: 'Esal',
                     icon: '',
                     class: '',
                     label: '',
@@ -808,7 +833,68 @@ function obtenermenu(ROLE) {
                     labelClass: '',
                     extralink: false,
                     submenu: []
+                },
+                {
+                    path: '/apps/usuario',
+                    title: 'Usuario',
+                    icon: '',
+                    class: '',
+                    label: '',
+                    labelClass: '',
+                    extralink: false,
+                    submenu: []
+                },
+                {
+                    path: '/apps/departamento',
+                    title: 'Departamento',
+                    icon: '',
+                    class: '',
+                    label: '',
+                    labelClass: '',
+                    extralink: false,
+                    submenu: []
+                },
+                {
+                    path: '/apps/tipoEsal',
+                    title: 'tipoEsal',
+                    icon: '',
+                    class: '',
+                    label: '',
+                    labelClass: '',
+                    extralink: false,
+                    submenu: []
+                },
+                {
+                    path: '/apps/municipio',
+                    title: 'municipio',
+                    icon: '',
+                    class: '',
+                    label: '',
+                    labelClass: '',
+                    extralink: false,
+                    submenu: []
+                },
+                {
+                    path: '/apps/donacion',
+                    title: 'donacion',
+                    icon: '',
+                    class: '',
+                    label: '',
+                    labelClass: '',
+                    extralink: false,
+                    submenu: []
+                },
+                {
+                    path: '/apps/esal',
+                    title: 'esal',
+                    icon: '',
+                    class: '',
+                    label: '',
+                    labelClass: '',
+                    extralink: false,
+                    submenu: []
                 }
+
             ]
         });
     }

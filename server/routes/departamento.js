@@ -14,7 +14,8 @@ const Departamento = require('../models/departamento');
 app.get('/departamento', (req, res) => {
 
     //q campos qremos mostrar
-    Departamento.find({}, 'descripcion')
+    Departamento.find({}, '')
+        .populate('usuario')
         .exec((err, departamentos) => {
 
             if (err) {
@@ -40,6 +41,46 @@ app.get('/departamento', (req, res) => {
         });
 
 })
+
+//==========================
+//Buscar DEPARTAMENTO por termino
+//==========================
+
+app.get('/departamento/buscar/:termino', verificaToken, function(req, res) {
+
+    let termino = req.params.termino;
+    let regex = new RegExp(termino, 'i');
+
+
+    Departamento.find({ descripcion: regex }, '')
+        .populate('usuario')
+        .exec((err, departamentos) => {
+
+            if (err) {
+
+                return res.status(500).json({
+                    ok: false,
+                    err
+                });
+
+            }
+            Departamento.count({ descripcion: regex }, (err, conteo) => {
+                res.json({
+                    ok: true,
+                    departamentos,
+                    cuantos: conteo
+                });
+
+            });
+
+
+
+        });
+
+
+
+
+});
 
 
 //crear nuevos registros

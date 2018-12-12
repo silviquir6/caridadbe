@@ -21,7 +21,7 @@ app.get('/donacion', verificaToken, function(req, res) {
     limite = Number(limite);
 
     //q campos qremos mostrar
-    Donacion.find({}, 'valor fecha esal usuario')
+    Donacion.find({})
         .populate('esal')
         .populate('usuario')
         .skip(desde)

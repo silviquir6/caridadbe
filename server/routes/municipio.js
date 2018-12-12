@@ -14,6 +14,7 @@ app.get('/municipio', (req, res) => {
 
     //q campos qremos mostrar
     Municipio.find({})
+        .populate('usuario')
         .exec((err, municipios) => {
 
             if (err) {
