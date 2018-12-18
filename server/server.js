@@ -11,17 +11,12 @@ const app = express()
 
 
 // CORS
-const cors = require('cors');
-
-app.use(cors({
-
-    origin: 'https://www.caridadhumana.com',
-
-    methods: ['POST', 'PUT', 'GET', 'DELETE', 'OPTIONS'],
-
-    allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, token'
-
-}));
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, token");
+    res.header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
+    next();
+});
 
 const bodyParser = require('body-parser')
     // parse application/x-www-form-urlencoded
