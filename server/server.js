@@ -13,8 +13,15 @@ const app = express()
 // CORS
 const cors = require('cors');
 
-app.use(cors({ origin: "https://caridadhumana.com", credentials: true }));
+app.use(cors({
 
+    origin: 'https://caridadhumana.com',
+
+    methods: ['POST', 'PUT', 'GET', 'DELETE', 'OPTIONS'],
+
+    allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, token'
+
+}));
 
 const bodyParser = require('body-parser')
     // parse application/x-www-form-urlencoded
