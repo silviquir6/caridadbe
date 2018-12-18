@@ -13,7 +13,7 @@ const app = express()
 // CORS
 const cors = require('cors');
 
-app.use(cors({ origin: "https://caridadhumana.com" }));
+app.use(cors({ origin: "https://caridadhumana.com", credentials: true }));
 
 
 const bodyParser = require('body-parser')
