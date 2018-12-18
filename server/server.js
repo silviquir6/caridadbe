@@ -15,7 +15,7 @@ const cors = require('cors');
 
 app.use(cors({
 
-    origin: 'https://caridadhumana.com',
+    origin: 'https://www.caridadhumana.com',
 
     methods: ['POST', 'PUT', 'GET', 'DELETE', 'OPTIONS'],
 
